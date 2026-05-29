@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "RaceSession": {
+      "title": "Race Session",
+      "description": "A record of a racing line optimization including track state and telemetry.",
+      "type": "object",
+      "properties": {
+        "timestamp": { "type": "string", "format": "date-time", "description": "When the session was executed." },
+        "startPos": { "type": "object", "properties": { "row": { "type": "number" }, "col": { "type": "number" } } },
+        "finishPos": { "type": "object", "properties": { "row": { "type": "number" }, "col": { "type": "number" } } },
+        "algorithm": { "type": "string", "description": "The optimization algorithm used." },
+        "telemetry": { 
+          "type": "object", 
+          "properties": { 
+            "nodesExplored": { "type": "number" }, 
+            "trajectoryLength": { "type": "number" },
+            "computeLatency": { "type": "number" }
+          } 
+        },
+        "aiAnalysis": { "type": "string", "description": "AI-generated strategy advice." }
+      },
+      "required": ["timestamp", "startPos", "finishPos", "algorithm"]
+    },
+    "TelemetryLog": {
+      "title": "Telemetry Log",
+      "description": "A system-generated telemetry log entry.",
+      "type": "object",
+      "properties": {
+        "timestamp": { "type": "string", "format": "date-time" },
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["info", "warning", "critical"] }
+      },
+      "required": ["timestamp", "message", "type"]
+    }
+  },
+  "firestore": {
+    "/race_sessions/{sessionId}": {
+      "schema": "RaceSession",
+      "description": "Historical racing session telemetry."
+    },
+    "/logs/{logId}": {
+      "schema": "TelemetryLog",
+      "description": "Real-time racing telemetry event logs."
+    }
+  }
+}

@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: race_sessions
+    // Fields:
+    //   - timestamp: timestamp (required)
+    //   - startPos: map {row: number, col: number} (required)
+    //   - finishPos: map {row: number, col: number} (required)
+    //   - algorithm: string (required)
+    //   - telemetry: map {nodesExplored: number, trajectoryLength: number, computeLatency: number}
+    //   - aiAnalysis: string
+    //
+    // Collection: logs
+    // Fields:
+    //   - timestamp: timestamp (required)
+    //   - message: string (required, max 500 chars)
+    //   - type: string (required, enum: ['info', 'warning', 'critical'])
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "rishihansaliya07@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidSession(data) {
+      return data.keys().hasAll(['timestamp', 'startPos', 'finishPos', 'algorithm']) &&
+             data.timestamp is timestamp &&
+             data.startPos is map && data.startPos.row is number && data.startPos.col is number &&
+             data.finishPos is map && data.finishPos.row is number && data.finishPos.col is number &&
+             data.algorithm is string;
+    }
+
+    function isValidLog(data) {
+      return data.keys().hasAll(['timestamp', 'message', 'type']) &&
+             data.timestamp is timestamp &&
+             data.message is string && data.message.size() <= 500 &&
+             data.type in ['info', 'warning', 'critical'];
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /race_sessions/{sessionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidSession(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    match /logs/{logId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidLog(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+  }
+}
