@@ -9,13 +9,18 @@ Powered by Google's Gemini API, Firebase, and a robust suite of pathfinding algo
 ## Key Features
 
 - **Motorsport Discipline Selector**: Instantly toggle between F1 (Asphalt), Rally (Dirt), Dakar (Sand), MotoGP (Leans), NASCAR (Ovals), and Motocross (Mud) to adapt optimization priorities.
+- 
 - **Deep Algorithm Suite (10 Engines)**:
   - *Uninformed*: Breadth-First Search (BFS), Depth-First Search (DFS).
   - *Heuristic*: Neural A*, Best-First Pursuit, Greedy Apex Strategy.
   - *Specialized*: Dijkstra, Hill-Climbing, Simulated Annealing, Genetic Algorithm, Beam Search.
+  - 
 - **ApexAI Strategist**: Real-time racing strategy feedback analyzing tyre management, sector latency, overtaking corridors, and racing line optimization using motorsport telemetry.
+- 
 - **Real-Time Speedometer & Audio**: Experience realistic acceleration via a mechanical speedometer synced directly to computational progress, backed by dynamic engine sound cycles.
+- 
 - **Custom Track Modeling**: Interactive brush tools to place Track Barriers, Oil Slicks (traction loss), Water Puddles (aquaplaning hazards), and Slipstreams (drag reduction corridors).
+- 
 - **Cloud Telemetry Archives**: Seamless Google Authentication and Firestore mapping to save, compare, and study previous fast-lapping sessions.
 
 ---
